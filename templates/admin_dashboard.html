@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .card-header {
+            border-radius: 10px 10px 0 0;
+        }
+        .btn-sm {
+            margin-right: 5px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+    <div class="container-fluid">
+        <h1 class="navbar-brand m-0">Admin Dashboard</h1>
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.admin_dashboard') }}">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.summary_admin') }}">Summary</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.user_management') }}">User Management</a></li>   
+            <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('controllers.logout') }}">Logout</a></li>   
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Manage Subjects & Chapters</h2>
+
+    <div class="row">
+        {% for subject in subjects %}
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ subject.name }}</h5>
+                    <div>
+                        <form action="{{ url_for('controllers.edit_subject', subject_id=subject.id) }}" method="POST" class="d-inline">
+                            <input type="text" name="new_subject_name" class="form-control form-control-sm d-inline w-auto" placeholder="Edit name" required>
+                            <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                        </form>
+                        <form action="{{ url_for('controllers.delete_subject', subject_id=subject.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Chapter Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for chapter in subject.chapters %}
+                            <tr>
+                                <td>{{ chapter.name }}</td>
+                                <td>
+                                    <form action="{{ url_for('controllers.edit_chapter', chapter_id=chapter.id) }}" method="POST" class="d-inline">
+                                        <input type="text" name="new_chapter_name" class="form-control form-control-sm d-inline w-auto" placeholder="Edit name" required>
+                                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                                    </form>
+                                    <form action="{{ url_for('controllers.delete_chapter', chapter_id=chapter.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                                    </form>
+                                    <a href="{{ url_for('controllers.view_quizzes_admin', subject_id=subject.id, chapter_id=chapter.id) }}" class="btn btn-info btn-sm">View Quizzes</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <!-- Add Chapter Form -->
+                    <form action="{{ url_for('controllers.admin_dashboard') }}" method="POST" class="d-flex mt-3">
+                        <input type="hidden" name="subject_id" value="{{ subject.id }}">
+                        <input type="text" name="chapter_name" class="form-control me-2" placeholder="New Chapter" required>
+                        <button type="submit" class="btn btn-primary">+ Chapter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Add Subject Form -->
+    <h3 class="mt-4 text-center">Add New Subject</h3>
+    <form action="{{ url_for('controllers.admin_dashboard') }}" method="POST" class="d-flex justify-content-center">
+        <input type="text" name="subject_name" class="form-control w-50 me-2" placeholder="New Subject" required>
+        <button type="submit" class="btn btn-success">+ Subject</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

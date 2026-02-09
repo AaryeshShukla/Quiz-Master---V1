@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Dashboard - Quiz Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Welcome</h2>
+        
+        <!-- Nav Bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="#">Quiz Master</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.user_dashboard') }}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.scores') }}">Scores</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.summary_user') }}">Summary</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.logout') }}">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Subject and Chapter Selection -->
+        <form method="POST">
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <label for="subject" class="form-label">Select Subject</label>
+                    <select id="subject" name="subject" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Select Subject --</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject.id }}" {% if subject.id|string == selected_subject|string %}selected{% endif %}>
+                                {{ subject.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="chapter" class="form-label">Select Chapter</label>
+                    <select id="chapter" name="chapter" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Select Chapter --</option>
+                        {% for chapter in chapters %}
+                            <option value="{{ chapter.id }}" {% if chapter.id|string == selected_chapter|string %}selected{% endif %}>
+                                {{ chapter.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <!-- Quizzes Table -->
+        <div class="card p-3 mt-4">
+            <h4>Quizzes Available</h4>
+            <table class="table table-bordered text-center">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>No. of Questions</th>
+                        <th>Duration (hh:mm)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quiz in quizzes %}
+                    <tr>
+                        <td>{{ quiz.id }}</td>
+                        <td>{{ quiz.num_questions }}</td>
+                        <td>{{ quiz.duration }}</td>
+                        <td>
+                            <a href="{{ url_for('controllers.view_quiz', quiz_id=quiz.id) }}" class="btn btn-info">View</a>
+                            <a href="{{ url_for('controllers.start_quiz', quiz_id=quiz.id) }}" class="btn btn-success">Start</a>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

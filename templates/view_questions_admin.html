@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Questions - {{ quiz.title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.admin_dashboard') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.summary_admin') }}">Summary</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.user_management') }}">User mangement</a></li>   
+
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-3">Questions for <span class="text-primary">{{ quiz.title }}</span></h2>
+
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Question</th>
+                    <th>Option A</th>
+                    <th>Option B</th>
+                    <th>Option C</th>
+                    <th>Option D</th>
+                    <th>Correct Answer</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                <tr>
+                    <td>{{ question.text }}</td>
+                    <td>{{ question.option_a }}</td>
+                    <td>{{ question.option_b }}</td>
+                    <td>{{ question.option_c }}</td>
+                    <td>{{ question.option_d }}</td>
+                    <td>{{ question.correct_answer }}</td>
+                    <td>
+                        <!-- Edit Button -->
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ question.id }}">Edit</button>
+
+                        <!-- Delete Form -->
+                        <form method="POST" class="d-inline">
+                            <input type="hidden" name="question_id" value="{{ question.id }}">
+                            <input type="hidden" name="action" value="delete">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this question?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editModal{{ question.id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Question</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="POST">
+                                <div class="modal-body">
+                                    <input type="hidden" name="question_id" value="{{ question.id }}">
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Question</label>
+                                        <input type="text" name="text" class="form-control" value="{{ question.text }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Option A</label>
+                                        <input type="text" name="option_a" class="form-control" value="{{ question.option_a }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Option B</label>
+                                        <input type="text" name="option_b" class="form-control" value="{{ question.option_b }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Option C</label>
+                                        <input type="text" name="option_c" class="form-control" value="{{ question.option_c }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Option D</label>
+                                        <input type="text" name="option_d" class="form-control" value="{{ question.option_d }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Correct Answer (A/B/C/D)</label>
+                                        <input type="text" name="correct_answer" class="form-control" value="{{ question.correct_answer }}" required maxlength="1">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="action" value="save" class="btn btn-success">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('controllers.view_quizzes_admin', chapter_id=quiz.chapter_id, subject_id=quiz.subject_id) }}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

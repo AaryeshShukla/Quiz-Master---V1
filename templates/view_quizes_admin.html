@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quiz Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <h1 class="navbar-brand m-0">Admin Dashboard</h1>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.admin_dashboard') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.summary_admin') }}">Summary</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.user_management') }}">User mangement</a></li>   
+
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('controllers.logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-3">Available Quizzes for <span class="text-primary">{{ subject.name }}</span> - <span class="text-success">{{ chapter.name }}</span></h2>
+
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Quiz Title</th>
+                    <th>Duration (Minutes)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                <tr>
+                    <td>{{ quiz.id }}</td>
+                    <td>{{ quiz.title }}</td>
+                    <td>{{ quiz.duration }}</td>
+                    <td>
+                        <a href="{{ url_for('controllers.view_questions_admin', quiz_id=quiz.id) }}" class="btn btn-info btn-sm">View Questions</a>
+                        <a href="{{ url_for('controllers.add_question', quiz_id=quiz.id) }}" class="btn btn-success btn-sm">Add Question</a>
+                        <form action="{{ url_for('controllers.delete_quiz', quiz_id=quiz.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this quiz?');">
+                                Delete
+                            </button>
+                        </form>                   
+                     </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('controllers.create_quiz', chapter_id=chapter.id) }}" class="btn btn-success">+ Create Quiz</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
